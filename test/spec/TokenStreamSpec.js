@@ -62,17 +62,17 @@ describe('TokenStream', () => {
 
   it('reads keywords', () => {
     const stream = new TokenStream(new InputStream('let'));
-    expect(stream.readNext()).to.deep.equal(Token.keywordToken('let'));
+    expect(stream.next()).to.deep.equal(Token.keywordToken('let'));
   });
 
   it('reads identifiers', () => {
     const stream = new TokenStream(new InputStream('thisIsAVariableName'));
-    expect(stream.readNext()).to.deep.equal(Token.identifierToken('thisIsAVariableName'));
+    expect(stream.next()).to.deep.equal(Token.identifierToken('thisIsAVariableName'));
   });
 
   it('reads floats', () => {
     const stream = new TokenStream(new InputStream('100.205'));
-    expect(stream.readNext()).to.deep.equal(Token.numberToken(100.205));
+    expect(stream.next()).to.deep.equal(Token.numberToken(100.205));
   });
 
   it('fails the input when a float is incorrectly formatted', () => {
@@ -81,22 +81,41 @@ describe('TokenStream', () => {
     input.fail = failInput;
     const stream = new TokenStream(input);
     expect(failInput).not.to.have.been.called;
-    stream.readNext();
+    stream.next();
     expect(failInput).to.have.been.called.once;
   });
 
   it('reads integers', () => {
     const stream = new TokenStream(new InputStream('100'));
-    expect(stream.readNext()).to.deep.equal(Token.numberToken(100));
+    expect(stream.next()).to.deep.equal(Token.numberToken(100));
   });
 
   it('skips whitespace', () => {
     const stream = new TokenStream(new InputStream('       \t \n 100'));
-    expect(stream.readNext()).to.deep.equal(Token.numberToken(100));
+    expect(stream.next()).to.deep.equal(Token.numberToken(100));
   });
 
   it('reads strings', () => {
     const stream = new TokenStream(new InputStream('\'this is a string literal\''));
-    expect(stream.readNext()).to.deep.equal(Token.stringToken('this is a string literal'));
+    expect(stream.next()).to.deep.equal(Token.stringToken('this is a string literal'));
+  });
+
+  it('reads punctuation', () => {
+    const stream = new TokenStream(new InputStream(';'));
+    expect(stream.next()).to.deep.equal(Token.punctuationToken(';'));
+  });
+
+  it('reads multiple different tokens in order', () => {
+    const stream = new TokenStream(new InputStream('let thing = 500'));
+    expect(stream.next()).to.deep.equal(Token.keywordToken('let'));
+    expect(stream.next()).to.deep.equal(Token.identifierToken('thing'));
+    expect(stream.next()).to.deep.equal(Token.operatorToken('='));
+    expect(stream.next()).to.deep.equal(Token.numberToken(500));
+  });
+
+  it('can peek the next token without advancing', () => {
+    const stream = new TokenStream(new InputStream('let thing'));
+    expect(stream.peek()).to.deep.equal(Token.keywordToken('let'));
+    expect(stream.next()).to.deep.equal(Token.keywordToken('let'));
   });
 });
