@@ -10,42 +10,42 @@ describe('Token', () => {
     expect(token.value).to.equal(value);
   });
 
-  it('can create number tokens', () => {
+  it('creates number tokens', () => {
     const value = 123;
     const token = Token.numberToken(value);
     expect(token.type).to.equal(Token.Types.Number);
     expect(token.value).to.equal(value);
   });
 
-  it('can create keyword tokens', () => {
+  it('creates keyword tokens', () => {
     const value = 'let';
     const token = Token.keywordToken(value);
     expect(token.type).to.equal(Token.Types.Keyword);
     expect(token.value).to.equal(value);
   });
 
-  it('can create identifier tokens', () => {
+  it('creates identifier tokens', () => {
     const value = 'anIdentifier';
     const token = Token.identifierToken(value);
     expect(token.type).to.equal(Token.Types.Identifier);
     expect(token.value).to.equal(value);
   });
 
-  it('can create operator tokens', () => {
+  it('creates operator tokens', () => {
     const value = '+';
     const token = Token.operatorToken(value);
     expect(token.type).to.equal(Token.Types.Operator);
     expect(token.value).to.equal(value);
   });
 
-  it('can create punctuation tokens', () => {
+  it('creates punctuation tokens', () => {
     const value = '{';
     const token = Token.punctuationToken(value);
     expect(token.type).to.equal(Token.Types.Punctuation);
     expect(token.value).to.equal(value);
   });
 
-  it('can create string tokens', () => {
+  it('creates string tokens', () => {
     const value = 'a string value';
     const token = Token.stringToken(value);
     expect(token.type).to.equal(Token.Types.String);
