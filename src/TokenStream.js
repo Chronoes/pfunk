@@ -3,21 +3,26 @@ import Token from './Token';
 export default class TokenStream {
   static keywords = ['if', 'else', '=>', 'true', 'false', 'let'];
 
+  static keywordPattern = new RegExp(`^(${TokenStream.keywords.join('|')})$`);
+  static digitPattern = /^\d$/;
+  static identifierPattern = /^[a-z_]+$/i;
+  static operatorPattern = /^(\+|-|\*|\/|%|=|&|\||<|>|!)$/;
+  static punctuationPattern = /^(\.|,|;|\(|\)|{|}|\[|\])$/;
+  static whitespacePattern = /^\s$/;
+
   constructor(input) {
     this.input = input;
     this.current = null;
   }
 
-  static isKeyword(characters) {
-    return new RegExp(`^(${TokenStream.keywords.join('|')})$`, 'g').test(characters);
-  }
-  static isDigit(characters) { return /^\d$/g.test(characters); }
+  static isKeyword(characters) { return TokenStream.keywordPattern.test(characters); }
+  static isDigit(characters) { return TokenStream.digitPattern.test(characters); }
   static isIdentifier(characters) {
-    return /^[a-z_]+$/gi.test(characters) && !TokenStream.isKeyword(characters);
+    return TokenStream.identifierPattern.test(characters) && !TokenStream.isKeyword(characters);
   }
-  static isOperator(characters) { return /^(\+|-|\*|\/|%|=|&|\||<|>|!)$/g.test(characters); }
-  static isPunctuation(characters) { return /^(\.|,|;|\(|\)|{|}|\[|\])$/g.test(characters); }
-  static isWhitespace(characters) { return /^\s$/g.test(characters); }
+  static isOperator(characters) { return TokenStream.operatorPattern.test(characters); }
+  static isPunctuation(characters) { return TokenStream.punctuationPattern.test(characters); }
+  static isWhitespace(characters) { return TokenStream.whitespacePattern.test(characters); }
 
   readWhile(predicate) {
     let characters = '';
@@ -56,7 +61,7 @@ export default class TokenStream {
     while (!this.input.isNextEOF()) {
       const character = this.input.next();
       if (escaped) {
-        characters += character;
+        characters += `\\${character}`;
         escaped = false;
       } else if (character === '\\') {
         escaped = true;
